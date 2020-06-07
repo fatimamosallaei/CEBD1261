@@ -5,6 +5,7 @@ import org.apache.spark._
 import org.apache.spark.SparkContext._
 import org.apache.spark.sql._
 import org.apache.log4j._
+ import org.apache.spark.util.SizeEstimator
 
 
 
@@ -48,12 +49,16 @@ object w6e2 {
    // 1. Read insurance.csv file 
     val lines = spark.sparkContext.textFile("C://SparkScala//insurance.csv")
     val head = lines.first()
+    
+    
+    println(" the amount of memory that should be allocated is : "+SizeEstimator.estimate(lines))
 
     val data = lines.filter(x => x != head) // removes the header
     
     
     val customer = data.map(mapper).toDS().cache()
    
+     
     
     //2. Print the size
     println("The datset has  "+customer.count+" rows")
@@ -69,7 +74,7 @@ object w6e2 {
     //4. Filter smoker=yes and print again the sex,count of sex
  
     println("Filter out  smokers:")
-    customer.filter(customer("smoker").contains("no")).groupBy("sex").count().show()
+    customer.filter(customer("smoker").contains("yes")).groupBy("sex").count().show()
     
     
     
